@@ -28,7 +28,7 @@ predict_reboot_df = pd.read_csv('reboot_time(predict).csv')
 # parameter setting
 n_epochs = 5
 oversampling_type = 2
-label_type = 2
+label_type = 3
 model_type = 3
 filter_out_breakpoint = 'yes'
 
@@ -114,13 +114,15 @@ elif oversampling_type == 2:
     sm = SMOTE(random_state=42)
     
 x_train_res, y_train_res = sm.fit_sample(x_train, y_train)
-cnt1,cnt2 = 0, 0 
+cnt1,cnt2, cnt3 = 0, 0, 0 
 for i in y_train_res:
     if i == 0:
         cnt1 += 1
     elif i == 1:
         cnt2 += 1
-print(cnt1,cnt2)
+    else:
+        cnt3 += 1
+print(cnt1,cnt2,cnt3)
 
 
 # In[7]:
@@ -161,14 +163,14 @@ predict_data =  np.reshape(predict_data, (predict_data.shape[0],1,predict_data.s
 predict_data.shape
 
 
-# In[28]:
+# In[11]:
 
 
 # oversampling後的data數
 x_train_res.shape
 
 
-# In[11]:
+# In[12]:
 
 
 # np.shape example
@@ -176,7 +178,7 @@ a = np.zeros([2,12])
 print(a)
 
 
-# In[12]:
+# In[13]:
 
 
 # lSTM model types:
@@ -200,7 +202,7 @@ if model_type == 3:
     model.add(Dense(label_type,activation = 'sigmoid'))
 
 
-# In[13]:
+# In[14]:
 
 
 if label_type > 2:
@@ -213,7 +215,7 @@ y_test = np_utils.to_categorical(y_test)
 print(model.summary())
 
 
-# In[14]:
+# In[15]:
 
 
 model.fit(x_train_res, y_train_res, validation_split = 0.2, epochs = n_epochs, batch_size = 32 ,verbose = 1)
@@ -222,7 +224,7 @@ print('test loss:', score[0])
 print('test accuracy:',score[1])
 
 
-# In[15]:
+# In[16]:
 
 
 # model Evaluation
@@ -237,7 +239,7 @@ print('Model performance:')
 print(classification_report(tmp_y_test,y_pred))
 
 
-# In[26]:
+# In[17]:
 
 
 # Visualization
@@ -256,7 +258,7 @@ def plotting(time,value,code,re_indx,title="", xlabel='Time', ylabel='Value', dp
     plt.show()
 
 
-# In[27]:
+# In[18]:
 
 
 time = np.arange(len(truth))
