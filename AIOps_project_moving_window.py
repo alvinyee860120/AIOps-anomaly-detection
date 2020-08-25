@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[2]:
+# In[1]:
 
 
 import pandas as pd 
@@ -27,7 +27,7 @@ from sklearn.metrics import mean_absolute_error
 scaler = MinMaxScaler()
 
 
-# In[3]:
+# In[2]:
 
 
 # read csv data
@@ -59,32 +59,40 @@ n_epochs = 3
 model_type = 3
 
 
-# In[4]:
+# In[3]:
 
 
-df
+origin_pred_df
 
 
-# In[5]:
+# In[6]:
 
 
 # extract all reboot index
 reboot = reboot_df['reboot'].values
 predict_reboot = predict_reboot_df['reboot'].values
 
-def extract_reboot_time(reboot):
+def extract_reboot_time(reboot, window_size):
     reboot_index = []
     for i,v in enumerate(reboot):
         if v == 1:
-            reboot_index.append(i)
+            reboot_index.append(i-window_size)
     return reboot_index
 
 
-t1 = extract_reboot_time(reboot)
-t2 = extract_reboot_time(predict_reboot)    
+t1 = extract_reboot_time(reboot, window_size)
+t2 = extract_reboot_time(predict_reboot, window_size)    
 
 
-# In[6]:
+# In[7]:
+
+
+for i in t2:
+    print(i)
+    
+
+
+# In[8]:
 
 
 # create model input/ouput data
@@ -116,7 +124,16 @@ def data_split(data, window_size):
     return np.array(history), np.array(predict)
 
 
-# In[7]:
+# In[9]:
+
+
+for i in t2:
+    print(origin_pred_df.loc[i].values)
+    print(predict_df.loc[i].values)
+    print('\n')
+
+
+# In[10]:
 
 
 # np.shape example
@@ -124,7 +141,7 @@ a = np.zeros([12,1])
 print(a)
 
 
-# In[25]:
+# In[11]:
 
 
 def plot_compare(time, y1, y2, title="", xlabel='Time', ylabel='Value', dpi=200):
@@ -135,10 +152,10 @@ def plot_compare(time, y1, y2, title="", xlabel='Time', ylabel='Value', dpi=200)
     plt.legend()
     plt.show()
 
-def plot_df(time, y, color,re_indx,title="", xlabel='Time', ylabel='Value', dpi=200):
+def plot_df(time, y, color, re_indx, title="", xlabel='Time', ylabel='Value', dpi=200):
     plt.figure(figsize=(16,8), dpi=dpi)
     plt.plot(time, y, color=color)
-    plt.plot(re_indx,y[re_indx],'ro')
+    plt.plot(re_indx, y[re_indx],'ro')
     plt.gca().set(title=title, xlabel=xlabel, ylabel=ylabel)
     plt.show()   
     
@@ -180,16 +197,18 @@ def LSTM_model(x_train,y_train,x_test,y_test,origin_x_test,origin_y_test,model_t
     time = np.arange(len(y_test))
     plot_df(time, y_test, 'tab:blue', t2, title= 'metric: '+i+' 0727-0729 scaled ground_truth')
     plot_df(time, y_pred[:,0], 'tab:green', t2, title= 'metric: '+i+' 0727-0729 model prediction')
-    print('meric: '+i+', score(mean_absoluted_error):',score)
+    print('metric: '+i+', score(mean_absoluted_error):',score)
 
     plot_df(time, o_y_test,'tab:blue', t2, title= 'metric: '+i+' 0727-0729 model original ground truth ')
     plot_df(time, o_y_pred[:,0],'tab:green', t2, title= 'metric: '+i+' 0727-0729 model inverse prediction')
     plt.show()
-
     print(np.unique(o_y_pred))
+    print(np.unique(o_y_pred[:,0]))
+    print(o_y_pred[:,0].shape)
+    print(o_y_pred.shape)
 
 
-# In[26]:
+# In[14]:
 
 
 for i in columns:
@@ -199,7 +218,8 @@ for i in columns:
     x_test, y_test = data_split(test, window_size)
     # origin
     origin_x_test, origin_y_test = data_split(origin_test, window_size)
-    
+    print(len(origin_y_test))
+    print(len(y_test))
     # reshape to fit into model
     x_train = x_train.reshape(x_train.shape[0], x_train.shape[1], 1)
     x_test= np.reshape(x_test, (x_test.shape[0],x_test.shape[1],1))
