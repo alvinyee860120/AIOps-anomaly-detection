@@ -13,11 +13,11 @@ from sklearn.preprocessing import MinMaxScaler
 
 
 # setting label type
-label_type = 2
+label_type = 3
 
-# setting offest window size
-offset_time_limit = 1*60
-offset_time_limit_size = int(offset_time_limit/30)
+# # setting offest window size
+# offset_time_limit = 1*60
+# offset_time_limit_size = int(offset_time_limit/30)
 
 
 # In[3]:
@@ -75,7 +75,7 @@ def compute_normal_and_outliers(array):
     print('------------')
     return final, upper_bound, lower_bound
 
-def compute_normal_and_outliers2preduct(array,upper,lower):
+def compute_normal_and_outliers2predict(array,upper,lower):
     temp = []
     for i in array:
         if i != 0 and i > 0:
@@ -110,28 +110,28 @@ def compute_normal_and_outliers2preduct(array,upper,lower):
 #     return final
 
 
-# In[6]:
+# In[13]:
 
 
 # compute outliers & normal of each metric(excluding null point)
-collection2,upper1,lower1 = compute_normal_and_outliers(collection)
-cpu2,upper2,lower2 = compute_normal_and_outliers(cpu)
-mem_eden2,upper3,lower3 = compute_normal_and_outliers(mem_eden)
-mem_old2,upper4,lower4 = compute_normal_and_outliers(mem_old)
-pause_avg2,upper5,lower5 = compute_normal_and_outliers(pause_avg)
-pause_max2,upper6,lower6 = compute_normal_and_outliers(pause_max)
-thread_live2,upper7,lower7 = compute_normal_and_outliers(thread_live)
-thread_daemon2,upper8,lower8 = compute_normal_and_outliers(thread_daemon)
-thread_peak2,upper9,lower9 = compute_normal_and_outliers(thread_peak)
-tomcat_busy2,upper10,lower10 = compute_normal_and_outliers(tomcat_busy)
-tomcat_cur2,upper11,lower11 = compute_normal_and_outliers(tomcat_cur)
-offset2,upper12,lower12 = compute_normal_and_outliers(offset)
+collection_,upper1,lower1 = compute_normal_and_outliers(collection)
+cpu_,upper2,lower2 = compute_normal_and_outliers(cpu)
+mem_eden_,upper3,lower3 = compute_normal_and_outliers(mem_eden)
+mem_old_,upper4,lower4 = compute_normal_and_outliers(mem_old)
+pause_avg_,upper5,lower5 = compute_normal_and_outliers(pause_avg)
+pause_max_,upper6,lower6 = compute_normal_and_outliers(pause_max)
+thread_live_,upper7,lower7 = compute_normal_and_outliers(thread_live)
+thread_daemon_,upper8,lower8 = compute_normal_and_outliers(thread_daemon)
+thread_peak_,upper9,lower9 = compute_normal_and_outliers(thread_peak)
+tomcat_busy_,upper10,lower10 = compute_normal_and_outliers(tomcat_busy)
+tomcat_cur_,upper11,lower11 = compute_normal_and_outliers(tomcat_cur)
+offset_,upper12,lower12 = compute_normal_and_outliers(offset)
 
 # setting value of delta offset below threshold as anomaly, otherwise normal 
 # offset2 = check_offest_interval_anomaly(offset,offset_time_limit_size)
 
 
-# In[7]:
+# In[14]:
 
 
 columns = ['collections(end of minor GC (Allocatin Failure))','process_cpu_usage'
@@ -143,9 +143,10 @@ columns = ['collections(end of minor GC (Allocatin Failure))','process_cpu_usage
 df_ = list(zip(collection2,cpu2,mem_eden2,mem_old2,pause_avg2,pause_max2,thread_live2
          ,thread_daemon2,thread_peak2,tomcat_busy2,tomcat_cur2,offset2))
 df_ = pd.DataFrame(df_,columns = columns) 
+df_
 
 
-# In[8]:
+# In[15]:
 
 
 #binary labeling:
@@ -202,7 +203,7 @@ if label_type == 3:
     print('normal percentage: ',label.count(0)/len(label)*100,'%')
 
 
-# In[9]:
+# In[16]:
 
 
 # just for checking label
@@ -212,7 +213,7 @@ new_df = pd.concat([df_,label_df],axis=1)
 new_df
 
 
-# In[10]:
+# In[17]:
 
 
 def new_reshape(data):
@@ -222,7 +223,7 @@ def new_reshape(data):
     return tmp
 
 
-# In[11]:
+# In[18]:
 
 
 a = collection.reshape(-1,1)
@@ -232,7 +233,7 @@ print(collection.shape)
 print(a.shape)
 
 
-# In[12]:
+# In[19]:
 
 
 def scaler_trans(train,test):
@@ -260,18 +261,18 @@ offset2 = df2['kafka_topic_offset'].values
 reboot2 = df2['reboot_count'].values
 
 # construct predict label
-collection_lbl = compute_normal_and_outliers2preduct(collection2,upper1,lower1)
-cpu_lbl = compute_normal_and_outliers2preduct(cpu2,upper2,lower2)
-mem_eden_lbl = compute_normal_and_outliers2preduct(mem_eden2,upper3,lower3)
-mem_old_lbl = compute_normal_and_outliers2preduct(mem_old2,upper4,lower4)
-pause_avg_lbl = compute_normal_and_outliers2preduct(pause_avg2,upper5,lower5)
-pause_max_lbl = compute_normal_and_outliers2preduct(pause_max2,upper6,lower6)
-thread_live_lbl = compute_normal_and_outliers2preduct(thread_live2,upper7,lower7)
-thread_daemon_lbl = compute_normal_and_outliers2preduct(thread_daemon2,upper8,lower8)
-thread_peak_lbl = compute_normal_and_outliers2preduct(thread_peak2,upper9,lower9)
-tomcat_busy_lbl = compute_normal_and_outliers2preduct(tomcat_busy2,upper10,lower10)
-tomcat_cur_lbl = compute_normal_and_outliers2preduct(tomcat_cur2,upper11,lower11)
-offset_lbl = compute_normal_and_outliers2preduct(offset2,upper12,lower12)
+collection_lbl = compute_normal_and_outliers2predict(collection2,upper1,lower1)
+cpu_lbl = compute_normal_and_outliers2predict(cpu2,upper2,lower2)
+mem_eden_lbl = compute_normal_and_outliers2predict(mem_eden2,upper3,lower3)
+mem_old_lbl = compute_normal_and_outliers2predict(mem_old2,upper4,lower4)
+pause_avg_lbl = compute_normal_and_outliers2predict(pause_avg2,upper5,lower5)
+pause_max_lbl = compute_normal_and_outliers2predict(pause_max2,upper6,lower6)
+thread_live_lbl = compute_normal_and_outliers2predict(thread_live2,upper7,lower7)
+thread_daemon_lbl = compute_normal_and_outliers2predict(thread_daemon2,upper8,lower8)
+thread_peak_lbl = compute_normal_and_outliers2predict(thread_peak2,upper9,lower9)
+tomcat_busy_lbl = compute_normal_and_outliers2predict(tomcat_busy2,upper10,lower10)
+tomcat_cur_lbl = compute_normal_and_outliers2predict(tomcat_cur2,upper11,lower11)
+offset_lbl = compute_normal_and_outliers2predict(offset2,upper12,lower12)
 
 
 # normalization
@@ -318,26 +319,12 @@ thread_peak3 = new_reshape(thread_peak_pred)
 tomcat_busy3 = new_reshape(tomcat_busy_pred)
 tomcat_cur3 = new_reshape(tomcat_cur_pred)
 offset3 = new_reshape(offset_pred)                          
-                          
-                          
-                          
-# collection = compute_normal_and_outliers2(collection)
-# cpu = compute_normal_and_outliers2(cpu)
-# mem_eden = compute_normal_and_outliers2(mem_eden)
-# mem_old = compute_normal_and_outliers2(mem_old)
-# pause_avg = compute_normal_and_outliers2(pause_avg)
-# pause_max = compute_normal_and_outliers2(pause_max)
-# thread_live = compute_normal_and_outliers2(thread_live)
-# thread_daemon = compute_normal_and_outliers2(thread_daemon)
-# thread_peak = compute_normal_and_outliers2(thread_peak)
-# tomcat_busy = compute_normal_and_outliers2(tomcat_busy)
-# tomcat_cur = compute_normal_and_outliers2(tomcat_cur)
-# offset = compute_normal_and_outliers2(offset)
 
 
-# In[13]:
+# In[20]:
 
 
+# scaled training data
 columns = ['collections(end of minor GC (Allocatin Failure))','process_cpu_usage'
             ,'memory_usaged PS_Eden_Space','memory_usaged PS_Old_Gen'
            ,'pause durations(avg end of minor GC (Allocation Failure))'
@@ -351,7 +338,23 @@ df_train.to_csv('train_test.csv',sep=',',index = 0)
 df_train
 
 
-# In[14]:
+# In[23]:
+
+
+# scaled testing data
+columns = ['collections(end of minor GC (Allocatin Failure))','process_cpu_usage'
+            ,'memory_usaged PS_Eden_Space','memory_usaged PS_Old_Gen'
+           ,'pause durations(avg end of minor GC (Allocation Failure))'
+           ,'pause durations(max end of minor GC (Allocation Failure))'
+           ,'thread(live)','thread(daemon)','thread(peak)','tomcat_threads(busy)'
+            ,'tomcat_threads(current)','kafka_topic_offset']
+df_pred = list(zip(collection3,cpu3,mem_eden3,mem_old3,pause_avg3,pause_max3,thread_live3
+         ,thread_daemon3,thread_peak3,tomcat_busy3,tomcat_cur3,offset3))
+df_pred = pd.DataFrame(df_pred,columns = columns)
+df_pred
+
+
+# In[24]:
 
 
 # one-hot label for predict data
@@ -367,22 +370,7 @@ df_predlbl = pd.DataFrame(df_predlbl,columns = columns)
 df_predlbl
 
 
-# In[15]:
-
-
-columns = ['collections(end of minor GC (Allocatin Failure))','process_cpu_usage'
-            ,'memory_usaged PS_Eden_Space','memory_usaged PS_Old_Gen'
-           ,'pause durations(avg end of minor GC (Allocation Failure))'
-           ,'pause durations(max end of minor GC (Allocation Failure))'
-           ,'thread(live)','thread(daemon)','thread(peak)','tomcat_threads(busy)'
-            ,'tomcat_threads(current)','kafka_topic_offset']
-df_pred = list(zip(collection,cpu3,mem_eden3,mem_old3,pause_avg3,pause_max3,thread_live3
-         ,thread_daemon3,thread_peak3,tomcat_busy3,tomcat_cur3,offset3))
-df_pred = pd.DataFrame(df_pred,columns = columns)
-df_pred
-
-
-# In[16]:
+# In[25]:
 
 
 #binary labeling:
@@ -473,58 +461,27 @@ label_df = pd.DataFrame(label,columns = ['label'])
 new_df = pd.concat([df_pred,label_df],axis=1)
 new_df.to_csv('predict.csv',sep=',',index = 0)
 
-# # labeling:
-# label = []
-# alldf = df4[::].values
-# print(alldf.shape)
-# print(type(alldf))
-# print(alldf)
 
-# # 0 for normal, 1 for abnormal
-# for i in alldf:
-#     flag = 0
-#     for j in i:
-#         if j == 1:
-#             label.append(1)
-#             flag = 1
-#             break
-#     if flag == 0:
-#         label.append(0)
-
-# print(len(label))
-# print(label.count(1))
-# print('anomaly percentage: ',label.count(1)/len(label)*100,'%')
+# In[26]:
 
 
-# In[17]:
+# create reboot csv file
+count = 0
+for i in reboot:
+    if i == 1:
+        count += 1
+print(count)
+        
+count2 = 0
+for i in reboot2:
+    if i == 1:
+        count2 +=1
+print(count2)
 
 
-# # labeling:
-# label = []
-# alldf = df3[::].values
-# print(alldf.shape)
-# print(type(alldf))
-# print(alldf)
+reboot_df = pd.DataFrame(reboot,columns = ['reboot'])
+reboot_df.to_csv('reboot_time.csv',sep=',',index = 0)
 
-# # 0 for normal, 1 for abnormal
-# for i in alldf:
-#     flag = 0
-#     for j in i:
-#         if j == 1:
-#             label.append(1)
-#             flag = 1
-#             break
-#     if flag == 0:
-#         label.append(0)
-
-# print(len(label))
-# print(label.count(1))
-# print('anomaly percentage: ',label.count(1)/len(label)*100,'%')
-
-
-# In[ ]:
-
-
-# reboot_df = pd.DataFrame(reboot,columns = ['reboot'])
-# reboot_df.to_csv('reboot_time.csv',sep=',',index = 0)
+reboot_df2 = pd.DataFrame(reboot2,columns = ['reboot'])
+reboot_df2.to_csv('reboot_time(predict).csv',sep=',',index = 0)
 
