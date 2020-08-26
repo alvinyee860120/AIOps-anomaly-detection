@@ -1,14 +1,14 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import pandas as pd
 import numpy as np
 
 
-# In[11]:
+# In[ ]:
 
 
 def extract_values(df1,df2,df3,df4,df5,df6,df7,df8,df9,df10,df11):
@@ -33,14 +33,16 @@ def handle_kafka_data(df):
     kafka_v = []
     v = df['value'].values
     for i,val in enumerate(v):
-        if i % 2 == 0:
+        if i % 2 == 0 or i == 0:
             kafka_v.append(val)
     return kafka_v
 
 def delta_kafka(list1,final):
     new_list = []
     for i in range(len(list1)-1):
+        print(i)
         new_list.append(list1[i+1]-list1[i])
+    print(final-list1[-1])
     new_list.append(final-list1[-1])
     return new_list
 
@@ -66,7 +68,7 @@ def concat_timeseries_data(df1,df2,df3):
     return new_df
 
 
-# In[3]:
+# In[ ]:
 
 
 df1 = replace_null(handle_kafka_data(pd.read_csv('0727_kafka_df.csv')))
@@ -81,28 +83,28 @@ val2 = df4['kafka_topic_offset{instance="kafka-monitor-linebc-midlxmsp01.paas.ca
 print(len(kafka))
 
 
-# In[14]:
+# In[ ]:
 
 
 kafka_v = delta_kafka(kafka,val2[0])
 kafka_df = pd.DataFrame(kafka_v,columns=['kafka_topic_offset'])
 
 
-# In[7]:
+# In[ ]:
 
 
 # all metric in date X
-df1 = pd.read_csv('0727_collections_df.csv')
-df2 = pd.read_csv('0727_CPU_df.csv')
-df3 = pd.read_csv('0727_mem_df.csv')
-df4 = pd.read_csv('0727_mem(OldGen)_df.csv')
-df5 = pd.read_csv('0727_pause(1)_df.csv')
-df6 = pd.read_csv('0727_pause(2)_df.csv')
-df7 = pd.read_csv('0727_thread(1ive)_df.csv')
-df8 = pd.read_csv('0727_thread(daemon)_df.csv')
-df9 = pd.read_csv('0727_thread(peak)_df.csv')
-df10 = pd.read_csv('0727_tomcat_threads(busy)_df.csv')
-df11 = pd.read_csv('0727_tomcat_threads(cur)_df.csv')
+df1 = pd.read_csv('0713_collections_df.csv')
+df2 = pd.read_csv('0713_CPU_df.csv')
+df3 = pd.read_csv('0713_mem_df.csv')
+df4 = pd.read_csv('0713_mem(OldGen)_df.csv')
+df5 = pd.read_csv('0713_pause(1)_df.csv')
+df6 = pd.read_csv('0713_pause(2)_df.csv')
+df7 = pd.read_csv('0713_thread(1ive)_df.csv')
+df8 = pd.read_csv('0713_thread(daemon)_df.csv')
+df9 = pd.read_csv('0713_thread(peak)_df.csv')
+df10 = pd.read_csv('0713_tomcat_threads(busy)_df.csv')
+df11 = pd.read_csv('0713_tomcat_threads(cur)_df.csv')
 timestamp = df1['time'].values
 
 v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11 = extract_values(df1,df2,df3,df4,df5,df6,df7,df8,df9,df10,df11)
@@ -110,42 +112,42 @@ df_1 = create_csv(timestamp,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11)
 df_1
 
 
-# In[8]:
+# In[ ]:
 
 
 # all metric in date x
-df1 = pd.read_csv('0728_collections_df.csv')
-df2 = pd.read_csv('0728_CPU_df.csv')
-df3 = pd.read_csv('0728_mem_df.csv')
-df4 = pd.read_csv('0728_mem(OldGen)_df.csv')
-df5 = pd.read_csv('0728_pause(1)_df.csv')
-df6 = pd.read_csv('0728_pause(2)_df.csv')
-df7 = pd.read_csv('0728_thread(1ive)_df.csv')
-df8 = pd.read_csv('0728_thread(daemon)_df.csv')
-df9 = pd.read_csv('0728_thread(peak)_df.csv')
-df10 = pd.read_csv('0728_tomcat_threads(busy)_df.csv')
-df11 = pd.read_csv('0728_tomcat_threads(cur)_df.csv')
+df1 = pd.read_csv('0714_collections_df.csv')
+df2 = pd.read_csv('0714_CPU_df.csv')
+df3 = pd.read_csv('0714_mem_df.csv')
+df4 = pd.read_csv('0714_mem(OldGen)_df.csv')
+df5 = pd.read_csv('0714_pause(1)_df.csv')
+df6 = pd.read_csv('0714_pause(2)_df.csv')
+df7 = pd.read_csv('0714_thread(1ive)_df.csv')
+df8 = pd.read_csv('0714_thread(daemon)_df.csv')
+df9 = pd.read_csv('0714_thread(peak)_df.csv')
+df10 = pd.read_csv('0714_tomcat_threads(busy)_df.csv')
+df11 = pd.read_csv('0714_tomcat_threads(cur)_df.csv')
 timestamp = df1['time'].values
 v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11 = extract_values(df1,df2,df3,df4,df5,df6,df7,df8,df9,df10,df11)
 df_2 = create_csv(timestamp,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11)
 df_2
 
 
-# In[9]:
+# In[ ]:
 
 
 # all metric in date x
-df1 = pd.read_csv('0729_collections_df.csv')
-df2 = pd.read_csv('0729_CPU_df.csv')
-df3 = pd.read_csv('0729_mem_df.csv')
-df4 = pd.read_csv('0729_mem(OldGen)_df.csv')
-df5 = pd.read_csv('0729_pause(1)_df.csv')
-df6 = pd.read_csv('0729_pause(2)_df.csv')
-df7 = pd.read_csv('0729_thread(1ive)_df.csv')
-df8 = pd.read_csv('0729_thread(daemon)_df.csv')
-df9 = pd.read_csv('0729_thread(peak)_df.csv')
-df10 = pd.read_csv('0729_tomcat_threads(busy)_df.csv')
-df11 = pd.read_csv('0729_tomcat_threads(cur)_df.csv')
+df1 = pd.read_csv('0715_collections_df.csv')
+df2 = pd.read_csv('0715_CPU_df.csv')
+df3 = pd.read_csv('0715_mem_df.csv')
+df4 = pd.read_csv('0715_mem(OldGen)_df.csv')
+df5 = pd.read_csv('0715_pause(1)_df.csv')
+df6 = pd.read_csv('0715_pause(2)_df.csv')
+df7 = pd.read_csv('0715_thread(1ive)_df.csv')
+df8 = pd.read_csv('0715_thread(daemon)_df.csv')
+df9 = pd.read_csv('0715_thread(peak)_df.csv')
+df10 = pd.read_csv('0715_tomcat_threads(busy)_df.csv')
+df11 = pd.read_csv('0715_tomcat_threads(cur)_df.csv')
 timestamp = df1['time'].values
 v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11 = extract_values(df1,df2,df3,df4,df5,df6,df7,df8,df9,df10,df11)
 df_3 = create_csv(timestamp,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11)
@@ -299,20 +301,86 @@ df_10 = create_csv(timestamp,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11)
 df_10
 
 
-# In[12]:
+# In[ ]:
 
 
-df = concat_timeseries_data(df_1,df_2,df_3)
+# all metric in date X
+df1 = pd.read_csv('0727_collections_df.csv')
+df2 = pd.read_csv('0727_CPU_df.csv')
+df3 = pd.read_csv('0727_mem_df.csv')
+df4 = pd.read_csv('0727_mem(OldGen)_df.csv')
+df5 = pd.read_csv('0727_pause(1)_df.csv')
+df6 = pd.read_csv('0727_pause(2)_df.csv')
+df7 = pd.read_csv('0727_thread(1ive)_df.csv')
+df8 = pd.read_csv('0727_thread(daemon)_df.csv')
+df9 = pd.read_csv('0727_thread(peak)_df.csv')
+df10 = pd.read_csv('0727_tomcat_threads(busy)_df.csv')
+df11 = pd.read_csv('0727_tomcat_threads(cur)_df.csv')
+timestamp = df1['time'].values
+
+v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11 = extract_values(df1,df2,df3,df4,df5,df6,df7,df8,df9,df10,df11)
+df_11 = create_csv(timestamp,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11)
+df_11
 
 
-# In[15]:
+# all metric in date x
+df1 = pd.read_csv('0728_collections_df.csv')
+df2 = pd.read_csv('0728_CPU_df.csv')
+df3 = pd.read_csv('0728_mem_df.csv')
+df4 = pd.read_csv('0728_mem(OldGen)_df.csv')
+df5 = pd.read_csv('0728_pause(1)_df.csv')
+df6 = pd.read_csv('0728_pause(2)_df.csv')
+df7 = pd.read_csv('0728_thread(1ive)_df.csv')
+df8 = pd.read_csv('0728_thread(daemon)_df.csv')
+df9 = pd.read_csv('0728_thread(peak)_df.csv')
+df10 = pd.read_csv('0728_tomcat_threads(busy)_df.csv')
+df11 = pd.read_csv('0728_tomcat_threads(cur)_df.csv')
+timestamp = df1['time'].values
+v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11 = extract_values(df1,df2,df3,df4,df5,df6,df7,df8,df9,df10,df11)
+df_12 = create_csv(timestamp,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11)
+df_12
 
 
-new_df = pd.concat([df,kafka_df],axis=1)
-new_df
+# all metric in date x
+df1 = pd.read_csv('0729_collections_df.csv')
+df2 = pd.read_csv('0729_CPU_df.csv')
+df3 = pd.read_csv('0729_mem_df.csv')
+df4 = pd.read_csv('0729_mem(OldGen)_df.csv')
+df5 = pd.read_csv('0729_pause(1)_df.csv')
+df6 = pd.read_csv('0729_pause(2)_df.csv')
+df7 = pd.read_csv('0729_thread(1ive)_df.csv')
+df8 = pd.read_csv('0729_thread(daemon)_df.csv')
+df9 = pd.read_csv('0729_thread(peak)_df.csv')
+df10 = pd.read_csv('0729_tomcat_threads(busy)_df.csv')
+df11 = pd.read_csv('0729_tomcat_threads(cur)_df.csv')
+timestamp = df1['time'].values
+v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11 = extract_values(df1,df2,df3,df4,df5,df6,df7,df8,df9,df10,df11)
+df_13 = create_csv(timestamp,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11)
+df_13
 
 
-# In[16]:
+# In[ ]:
+
+
+train_df = concat_timeseries_data(df_1,df_2,df_3,df_4,df_5,df_6,df_7,df_8,df_9,df_10)
+test_df = concat_timeseries_data(df_11,df_12,df_13)
+
+
+# In[ ]:
+
+
+newtrain_df = pd.concat([train_df,kafka_df],axis=1)
+newtrain_df = pd.concat([newtrain_df,reboot_df],axis=1)
+newtrain_df
+
+
+# In[ ]:
+
+
+newtest_df.to_csv('all_metric_data.csv',sep=',',index = 0)
+
+
+# In[ ]:
 
 
 df1 = pd.read_csv('0727_reboot_df.csv')['value'].values
@@ -324,15 +392,16 @@ print(len(reboot))
 reboot_df = pd.DataFrame(reboot,columns = ['reboot_count'])
 
 
-# In[17]:
+# In[ ]:
 
 
-new_df = pd.concat([new_df,reboot_df],axis=1)
-new_df
+newtest_df = pd.concat([test_df,kafka_df],axis=1)
+newtest_df = pd.concat([newtest_df,reboot_df],axis=1)
+newtest_df
 
 
-# In[18]:
+# In[ ]:
 
 
-new_df.to_csv('all_metric_data(predict).csv',sep=',',index = 0)
+newtest_df.to_csv('all_metric_data(predict).csv',sep=',',index = 0)
 
