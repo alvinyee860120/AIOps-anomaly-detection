@@ -219,13 +219,14 @@ def create_df(t,v):
     tmp_df = pd.DataFrame(data,columns=['time','value'])
     return tmp_df
 
-# plotting 
+# plotting
 def plot_df(df, x, y, title="", xlabel='Date', ylabel='Value', dpi=200):
     plt.figure(figsize=(16,8), dpi=dpi)
     plt.plot(x, y, color='tab:green')
     plt.gca().set(title=title, xlabel=xlabel, ylabel=ylabel)
     plt.show()
     
+# 兩筆資料視覺化比對
 def plot_compare(df,df2, x, y1, y2, title="", xlabel='Date', ylabel='Value', dpi=200):
     plt.figure(figsize=(16,8), dpi=dpi)
     plt.plot(x, y1, label = target_api, color='tab:green')
@@ -238,7 +239,8 @@ def plot_compare(df,df2, x, y1, y2, title="", xlabel='Date', ylabel='Value', dpi
 # In[54]:
 
 
-# plotting(雙色作圖)
+# 單筆資料設定threshold 作圖
+#折線圖
 def masked_plot(df,x,y,title="", xlabel='Time', ylabel='Value', dpi=200):
     plt.figure(figsize=(16,8), dpi=dpi)
     threshold = 0.0065
@@ -253,7 +255,8 @@ def masked_plot(df,x,y,title="", xlabel='Time', ylabel='Value', dpi=200):
     plt.gca().set(title=title, xlabel=xlabel, ylabel=ylabel)
     plt.axhline(threshold, color='k', linestyle='--')
     plt.show()
-    
+
+# 點狀圖
 def marker_plot(df,x,y,title="", xlabel='Time', ylabel='Value', dpi=200):
     plt.figure(figsize=(16,8), dpi=dpi)
     # Plot the line
@@ -449,9 +452,6 @@ def create_dataset(name_dict, mem_target_id, cpu_name, time1, metric1, id1):
             value_collections.append(v2)
 
     column_name.insert(0,'Time')
-#     print(len(value_collections))
-#     print(len(column_name))
-#     print(len(time_collections))
     data = list(zip(time_collections[0],value_collections[0],value_collections[1],value_collections[2]
                  ,value_collections[3],value_collections[4]))
     df = pd.DataFrame(data,columns=column_name)
@@ -483,76 +483,4 @@ new_df2
 
 import gc
 gc.collect()
-
-
-# In[ ]:
-
-
-# x = df1['timestamp'].values
-# y = df1['value'].values
-
-# # Plot
-# fig, ax = plt.subplots(1, 1, figsize=(16,8), dpi= 200)
-# plt.fill_between(x, y1=y, y2=-y, alpha=0.5, linewidth=2, color='seagreen')
-# plt.ylim(-800, 800)
-# plt.title('prometheus data from day to day.', fontsize=16)
-# plt.hlines(y=0, xmin=np.min(df1.timestamp), xmax=np.max(df1.timestamp), linewidth=.5)
-# plt.show()
-
-
-# In[ ]:
-
-
-# df = pd.read_csv(file, parse_dates=['timestamp'], index_col='timestamp',low_memory=False)
-# df
-
-
-# In[ ]:
-
-
-# def plot_df(df, x, y, title="", xlabel='Date', ylabel='Value', dpi=200):
-#     plt.figure(figsize=(16,8), dpi=dpi)
-#     plt.plot(x, y, color='tab:orange')
-#     plt.gca().set(title=title, xlabel=xlabel, ylabel=ylabel)
-#     plt.show()
-
-# plot_df(df, x=df.index, y=df.value, title='prometheus data from day to day.')    
-
-
-# In[ ]:
-
-
-# url = "http://s3.amazonaws.com/assets.datacamp.com/course/Kaggle/train.csv"
-# df = pd.read_csv(url)
-# include = ['Age', 'Sex', 'Embarked', 'Survived'] # Only four features
-# df_ = df[include]
-
-
-# for col, col_type in df_.dtypes.iteritems():
-#     if col_type == 'O':
-#         categoricals.append(col)
-#     else:
-#         df_[col].fillna(0, inplace=True)
-
-
-# In[ ]:
-
-
-# from flask import Flask, jsonify
-# app = Flask(__name__)
-
-# @app.route('/predict', methods=['POST'])
-# def predict():
-#     json_ = request.json
-#     query_df = pd.DataFrame(json_)
-#     query = pd.get_dummies(query_df)
-#     prediction = lr.predict(query)
-#     return jsonify({'prediction': list(prediction)})
-
-
-# In[ ]:
-
-
-# model_columns = list(x.columns)
-# joblib.dump(model_columns, 'model_columns.pkl')
 
