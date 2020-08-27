@@ -15,7 +15,7 @@ from sklearn.preprocessing import MinMaxScaler
 # setting label type
 label_type = 3
 
-# # setting offest window size
+# # setting offset window size
 # offset_time_limit = 1*60
 # offset_time_limit_size = int(offset_time_limit/30)
 
@@ -110,7 +110,7 @@ def compute_normal_and_outliers2predict(array,upper,lower):
 #     return final
 
 
-# In[13]:
+# In[6]:
 
 
 # compute outliers & normal of each metric(excluding null point)
@@ -131,22 +131,23 @@ offset_,upper12,lower12 = compute_normal_and_outliers(offset)
 # offset2 = check_offest_interval_anomaly(offset,offset_time_limit_size)
 
 
-# In[14]:
+# In[7]:
 
 
+# create one hot table 
 columns = ['collections(end of minor GC (Allocatin Failure))','process_cpu_usage'
             ,'memory_usaged PS_Eden_Space','memory_usaged PS_Old_Gen'
            ,'pause durations(avg end of minor GC (Allocation Failure))'
            ,'pause durations(max end of minor GC (Allocation Failure))'
            ,'thread(live)','thread(daemon)','thread(peak)','tomcat_threads(busy)'
             ,'tomcat_threads(current)','kafka_topic_offset']
-df_ = list(zip(collection2,cpu2,mem_eden2,mem_old2,pause_avg2,pause_max2,thread_live2
-         ,thread_daemon2,thread_peak2,tomcat_busy2,tomcat_cur2,offset2))
+df_ = list(zip(collection_,cpu_,mem_eden_,mem_old_,pause_avg_,pause_max_,thread_live_
+         ,thread_daemon_,thread_peak_,tomcat_busy_,tomcat_cur_,offset_))
 df_ = pd.DataFrame(df_,columns = columns) 
 df_
 
 
-# In[15]:
+# In[8]:
 
 
 #binary labeling:
@@ -203,17 +204,7 @@ if label_type == 3:
     print('normal percentage: ',label.count(0)/len(label)*100,'%')
 
 
-# In[16]:
-
-
-# just for checking label
-label_df = pd.DataFrame(label,columns = ['label'])
-new_df = pd.concat([df_,label_df],axis=1)
-# new_df.to_csv('predict2.csv',sep=',',index = 0)
-new_df
-
-
-# In[17]:
+# In[9]:
 
 
 def new_reshape(data):
@@ -223,9 +214,10 @@ def new_reshape(data):
     return tmp
 
 
-# In[18]:
+# In[10]:
 
 
+# reshape example
 a = collection.reshape(-1,1)
 print(collection[0])
 print(a[0])
@@ -233,7 +225,7 @@ print(collection.shape)
 print(a.shape)
 
 
-# In[19]:
+# In[11]:
 
 
 def scaler_trans(train,test):
@@ -321,7 +313,7 @@ tomcat_cur3 = new_reshape(tomcat_cur_pred)
 offset3 = new_reshape(offset_pred)                          
 
 
-# In[20]:
+# In[12]:
 
 
 # scaled training data
@@ -338,7 +330,7 @@ df_train.to_csv('train_test.csv',sep=',',index = 0)
 df_train
 
 
-# In[23]:
+# In[13]:
 
 
 # scaled testing data
@@ -354,7 +346,7 @@ df_pred = pd.DataFrame(df_pred,columns = columns)
 df_pred
 
 
-# In[24]:
+# In[14]:
 
 
 # one-hot label for predict data
@@ -370,7 +362,7 @@ df_predlbl = pd.DataFrame(df_predlbl,columns = columns)
 df_predlbl
 
 
-# In[25]:
+# In[15]:
 
 
 #binary labeling:
@@ -462,7 +454,7 @@ new_df = pd.concat([df_pred,label_df],axis=1)
 new_df.to_csv('predict.csv',sep=',',index = 0)
 
 
-# In[26]:
+# In[16]:
 
 
 # create reboot csv file
