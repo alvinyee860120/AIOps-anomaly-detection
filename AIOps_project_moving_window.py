@@ -31,15 +31,11 @@ scaler = MinMaxScaler()
 
 
 # read csv data
-df = pd.read_csv('train_test.csv')
-predict_df = pd.read_csv('predict.csv')
-
-reboot_df = pd.read_csv('reboot_time.csv')
-predict_reboot_df = pd.read_csv('reboot_time(predict).csv')
-
 origin_df = pd.read_csv('all_metric_data.csv')
 origin_pred_df = pd.read_csv('all_metric_data(predict).csv')
 
+reboot_df = pd.read_csv('reboot_time.csv')
+predict_reboot_df = pd.read_csv('reboot_time(predict).csv')
 
 # setting sliding window size
 minutes = 5
@@ -57,6 +53,7 @@ columns = ['collections(end of minor GC (Allocatin Failure))','process_cpu_usage
 # parameter setting
 n_epochs = 3
 model_type = 3
+filter_out_breakpoint = 'yes'
 
 
 # In[3]:
@@ -65,7 +62,7 @@ model_type = 3
 origin_pred_df
 
 
-# In[6]:
+# In[4]:
 
 
 # extract all reboot index
@@ -84,15 +81,7 @@ t1 = extract_reboot_time(reboot, window_size)
 t2 = extract_reboot_time(predict_reboot, window_size)    
 
 
-# In[7]:
-
-
-for i in t2:
-    print(i)
-    
-
-
-# In[8]:
+# In[5]:
 
 
 # create model input/ouput data
@@ -124,16 +113,7 @@ def data_split(data, window_size):
     return np.array(history), np.array(predict)
 
 
-# In[9]:
-
-
-for i in t2:
-    print(origin_pred_df.loc[i].values)
-    print(predict_df.loc[i].values)
-    print('\n')
-
-
-# In[10]:
+# In[6]:
 
 
 # np.shape example
@@ -141,8 +121,19 @@ a = np.zeros([12,1])
 print(a)
 
 
-# In[11]:
+# In[7]:
 
+
+# filter out reboot point
+def filterout_breakpoint(t,x,y):
+    x2,y2 = [],[]
+    for i in range(len(x)):
+        if i in t:
+            continue
+        else:
+            x2.append(x[i])
+            y2.append(y[i])    
+    return np.array(x2), np.array(y2)
 
 def plot_compare(time, y1, y2, title="", xlabel='Time', ylabel='Value', dpi=200):
     plt.figure(figsize=(16,8), dpi=dpi)
@@ -192,34 +183,34 @@ def LSTM_model(x_train,y_train,x_test,y_test,origin_x_test,origin_y_test,model_t
     score = mean_absolute_error(y_test,y_pred)
     
     o_y_pred = scaler.inverse_transform(y_pred.reshape(-1,1))
-    o_y_test = scaler.inverse_transform(y_test.reshape(-1,1))
     
     time = np.arange(len(y_test))
     plot_df(time, y_test, 'tab:blue', t2, title= 'metric: '+i+' 0727-0729 scaled ground_truth')
     plot_df(time, y_pred[:,0], 'tab:green', t2, title= 'metric: '+i+' 0727-0729 model prediction')
     print('metric: '+i+', score(mean_absoluted_error):',score)
 
-    plot_df(time, o_y_test,'tab:blue', t2, title= 'metric: '+i+' 0727-0729 model original ground truth ')
+    plot_df(time, origin_y_test,'tab:blue', t2, title= 'metric: '+i+' 0727-0729 model original ground truth ')
     plot_df(time, o_y_pred[:,0],'tab:green', t2, title= 'metric: '+i+' 0727-0729 model inverse prediction')
     plt.show()
-    print(np.unique(o_y_pred))
-    print(np.unique(o_y_pred[:,0]))
-    print(o_y_pred[:,0].shape)
-    print(o_y_pred.shape)
 
 
-# In[14]:
+# In[8]:
 
 
 for i in columns:
     origin_test, train, test  = extract_each_column_v2(i)
-    # scaled
+
+    # split into moving window
     x_train, y_train = data_split(train, window_size)
     x_test, y_test = data_split(test, window_size)
+    
+    # filter out reboot point in training
+    if filter_out_breakpoint == 'yes':
+        x_train, y_train = filterout_breakpoint(t1,x_train,y_train)
+        
     # origin
     origin_x_test, origin_y_test = data_split(origin_test, window_size)
-    print(len(origin_y_test))
-    print(len(y_test))
+    
     # reshape to fit into model
     x_train = x_train.reshape(x_train.shape[0], x_train.shape[1], 1)
     x_test= np.reshape(x_test, (x_test.shape[0],x_test.shape[1],1))

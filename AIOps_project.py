@@ -6,6 +6,7 @@
 
 import pandas as pd 
 import numpy as np
+from matplotlib import pyplot
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
@@ -29,7 +30,7 @@ predict_reboot_df = pd.read_csv('reboot_time(predict).csv')
 n_epochs = 5
 oversampling_type = 2
 label_type = 3
-model_type = 3
+model_type = 2
 filter_out_breakpoint = 'yes'
 
 
@@ -61,8 +62,8 @@ t2 = extract_reboot_time(predict_reboot)
 
 
 # 各類別label個數 
-count_class_0, count_class_1 = df['label'].value_counts()
-print(count_class_0, count_class_1)
+count_class_0, count_class_1, count_class_2 = df['label'].value_counts()
+print(count_class_0, count_class_1, count_class_2)
 
 
 # In[6]:
@@ -82,7 +83,7 @@ print(predict_data.shape,type(predict_data),len(predict_data))
 print(truth.shape,type(truth),len(truth))
 
 
-# filter out break point
+# filter out reboot point
 def filterout_breakpoint(t,x,y):
     x2,y2 = [],[]
     for i in range(len(x)):
@@ -99,7 +100,7 @@ x_train, y_train = x, y
 x_test, y_test = predict_data, truth
 
 
-# filter out breakpoint in training 
+# filter out reboot point in training 
 if filter_out_breakpoint == 'yes':
     x_train, y_train = filterout_breakpoint(t1,x_train,y_train)
     
@@ -208,7 +209,7 @@ if model_type == 3:
 if label_type > 2:
     model.compile(optimizer = 'adam',loss = 'categorical_crossentropy', metrics = ['accuracy'])
 else:
-    model.compile(optimizer = 'adam',loss = 'binary_crossentropy', metrics = ['accuracy'])
+    model.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
 
 y_train_res = np_utils.to_categorical(y_train_res)
 y_test = np_utils.to_categorical(y_test)
@@ -218,13 +219,15 @@ print(model.summary())
 # In[15]:
 
 
-model.fit(x_train_res, y_train_res, validation_split = 0.2, epochs = n_epochs, batch_size = 32 ,verbose = 1)
+history = model.fit(x_train_res, y_train_res, validation_split = 0.2, epochs = n_epochs, batch_size = 32 ,verbose = 1)
+
+# evaluate model score
 score = model.evaluate(x_test,y_test)
 print('test loss:', score[0])
 print('test accuracy:',score[1])
 
 
-# In[16]:
+# In[ ]:
 
 
 # model Evaluation
@@ -239,7 +242,7 @@ print('Model performance:')
 print(classification_report(tmp_y_test,y_pred))
 
 
-# In[17]:
+# In[ ]:
 
 
 # Visualization
@@ -258,7 +261,7 @@ def plotting(time,value,code,re_indx,title="", xlabel='Time', ylabel='Value', dp
     plt.show()
 
 
-# In[18]:
+# In[ ]:
 
 
 time = np.arange(len(truth))
