@@ -39,21 +39,8 @@ url = 'http://88.8.196.120:9090'
 def GetMetrixNames(url):
     response = requests.get('{0}/api/v1/label/__name__/values'.format(url))
     names = response.json()['data']
-
     #Return metrix names
     return names
-
-
-# In[4]:
-
-
-# 設定欲查詢的metric需含哪些關鍵字
-target1 = 'cpu'
-target2 = 'memory'
-target3 = 'thread'
-target4 = 'response'
-target_list = [target1,target2,target3,target4]
-target = ['jvm_buffer_memory_used_bytes','jvm_gc_memory_allocated_bytes_total','jvm_memory_used_bytes', 'process_cpu_usage', 'system_cpu_count', 'system_cpu_usage']
 
 
 # In[5]:
@@ -62,35 +49,6 @@ target = ['jvm_buffer_memory_used_bytes','jvm_gc_memory_allocated_bytes_total','
 metrixNames=GetMetrixNames(url)
 print('Metrix個數:',len(metrixNames))
 print('-----------------------------')
-cnt = 0
-for i in metrixNames:
-#     if i in target:
-    print(i)
-    cnt+=1
-
-print(cnt)
-
-
-# In[6]:
-
-
-#example
-list1 = []
-count = 0
-for i in metrixNames:
-    print(i)
-    for j in target_list:     
-        if j in i:
-            count += 1
-            list1.append(i)
-
-
-# In[7]:
-
-
-for i in list1:
-    print(i)
-print(count)
 
 
 # In[12]:
@@ -110,13 +68,6 @@ step2 = '15s'
 start3 = '2020-07-13T08:00:00.000Z'
 end3 = '2020-07-13T15:59:45.000Z'
 step3 = '15s'
-
-
-# In[13]:
-
-
-# 服務斷掉及重啟: no data
-# 07/07 00:00:00 - 08:00:00 
 
 
 # In[14]:
@@ -139,10 +90,6 @@ with open(day_data_name, 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writeHeader=True
     for metrixResult in metrixNames:
-#         if metrixResult in target:
-        print(metrixResult)
-#         if target1 in metrixResult or target2 in metrixResult:
-
         # now its hardcoded from time to time
         response = requests.get(url+'/api/v1/query_range?query='+metrixResult+'&start='+start+'&end='+end+'&step='+step) #,params={'query': metrixResult})
         print(response)
@@ -168,11 +115,9 @@ with open(day_data_name, 'w', newline='') as csvfile:
                 if len(result['values']) > max_len_result:
                     max_len_result = len(result['values'])
         
-#         time.sleep(5)    
+        time.sleep(5)    
 
     for metrixResult in metrixNames:
-#         if metrixResult in target:
-
         # now its hardcoded from time to time
         response = requests.get(url+'/api/v1/query_range?query='+metrixResult+'&start='+start+'&end='+end+'&step='+step) #,params={'query': metrixResult})
         if response.json()['status'] ==  'success':
@@ -192,8 +137,8 @@ with open(day_data_name, 'w', newline='') as csvfile:
                 for label in label_list:
                     l.append(result['metric'].get(label, 'NaN'))
                 writer.writerow(l)                
-#         time.sleep(5)
-
+        time.sleep(5)
+        
     print(max_len_result)
     csvfile.close()
 
@@ -204,7 +149,6 @@ with open(day_data_name, 'w', newline='') as csvfile:
 # setting date
 day_data_name2 = '0713(2).csv'
 
-
 # create csv
 with open(day_data_name2, 'w', newline='') as csvfile:
     label_list = ['name','timestamp_and_value']
@@ -212,10 +156,6 @@ with open(day_data_name2, 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writeHeader=True
     for metrixResult in metrixNames:
-#         if metrixResult in target:
-        print(metrixResult)
-#         if target1 in metrixResult or target2 in metrixResult:
-
         # now its hardcoded from time to time
         response = requests.get(url+'/api/v1/query_range?query='+metrixResult+'&start='+start2+'&end='+end2+'&step='+step2) #,params={'query': metrixResult})
         print(response)
@@ -243,9 +183,6 @@ with open(day_data_name2, 'w', newline='') as csvfile:
         time.sleep(5)
 
     for metrixResult in metrixNames:
-#         if metrixResult in target:
-
-        # now its hardcoded from time to time
         response = requests.get(url+'/api/v1/query_range?query='+metrixResult+'&start='+start2+'&end='+end2+'&step='+step2) #,params={'query': metrixResult})
         if response.json()['status'] ==  'success':
             results = response.json()['data']['result']
@@ -276,7 +213,6 @@ with open(day_data_name2, 'w', newline='') as csvfile:
 # setting date
 day_data_name2 = '0713(3).csv'
 
-
 # create csv
 with open(day_data_name2, 'w', newline='') as csvfile:
     label_list = ['name','timestamp_and_value']
@@ -284,10 +220,6 @@ with open(day_data_name2, 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writeHeader=True
     for metrixResult in metrixNames:
-#         if metrixResult in target:
-        print(metrixResult)
-#         if target1 in metrixResult or target2 in metrixResult:
-
         # now its hardcoded from time to time
         response = requests.get(url+'/api/v1/query_range?query='+metrixResult+'&start='+start3+'&end='+end3+'&step='+step3) #,params={'query': metrixResult})
         print(response)
@@ -315,8 +247,6 @@ with open(day_data_name2, 'w', newline='') as csvfile:
         time.sleep(5)
 
     for metrixResult in metrixNames:
-#         if metrixResult in target:
-
         # now its hardcoded from time to time
         response = requests.get(url+'/api/v1/query_range?query='+metrixResult+'&start='+start2+'&end='+end2+'&step='+step2) #,params={'query': metrixResult})
         if response.json()['status'] ==  'success':
@@ -348,116 +278,4 @@ with open(day_data_name2, 'w', newline='') as csvfile:
 # release abundant memory
 import gc
 gc.collect()
-
-
-# In[ ]:
-
-
-# with open('up.csv', 'w', newline='') as csvfile:
-#     writer = csv.writer(csvfile)
-#     for metrixResult in metrixNames:
-#         if metrixResult == 'up':
-
-#             # now its hardcoded from time to time
-#             response = requests.get(url+'/api/v1/query_range?query='+metrixResult+'&start='+start+'&end='+end+'&step='+step) #,params={'query': metrixResult})
-#             results = response.json()['data']['result']
-
-#             # Build a list of all labelnames used.
-#             # Gets all keys and discard __name__
-#             labelnames = set()
-#             for result in results:
-#                 labelnames.update(result['metric'].keys())
-
-#             # Canonicalize
-#             labelnames.discard('__name__')
-#             labelnames = sorted(labelnames)
-#             print(labelnames)
-
-#             # Write the header
-#             writer.writerow(['name', 'timestamp_and_value'] + labelnames)
-
-#             # Write data into csv
-#             for result in results:
-#                 l = [result['metric'].get('__name__', '')] + result['values']  #values = [timestamp + value]                
-#                 for label in labelnames:
-#                     l.append(result['metric'].get(label, 'NaN'))
-#                 writer.writerow(l)
-
-#     csvfile.close()
-
-
-# In[ ]:
-
-
-# with open('time_interval_missingHeader.csv', 'w', newline='') as csvfile:
-#     writer = csv.writer(csvfile)
-#     writeHeader=True
-#     for metrixResult in metrixNames:
-#         if target1 in metrixResult or target2 in metrixResult:
-
-#             # now its hardcoded from time to time
-#             response = requests.get(url+'/api/v1/query_range?query='+metrixResult+'&start='+start+'&end='+end+'&step='+step) #,params={'query': metrixResult})
-#             results = response.json()['data']['result']
-
-#             # Build a list of all labelnames used.
-#             # Gets all keys and discard __name__
-#             labelnames = set()
-#             for result in results:
-#                 labelnames.update(result['metric'].keys())
-            
-#             # Canonicalize
-#             labelnames.discard('__name__')
-#             labelnames = sorted(labelnames)
-#             print(labelnames)
-            
-#             # Write the header
-#             if writeHeader:
-#                 writer.writerow(['name', 'timestamp_and_value'] + labelnames)
-#                 writeHeader=False
-
-#             # Write data into csv
-#             for result in results:
-#                 l = [result['metric'].get('__name__', '')] + result['values']  #values = [timestamp + value]                
-#                 for label in labelnames:
-#                     l.append(result['metric'].get(label, 'NaN'))
-#                 writer.writerow(l)
-
-#     csvfile.close()
-
-
-# In[ ]:
-
-
-# with open('time_interval_withHeader.csv', 'w', newline='') as csvfile:
-#     writer = csv.writer(csvfile)
-#     for metrixResult in metrixNames:
-#         if target1 in metrixResult or target2 in metrixResult:
-
-#             # now its hardcoded from time to time
-#             response = requests.get(url+'/api/v1/query_range?query='+metrixResult+'&start='+start+'&end='+end+'&step='+step) #,params={'query': metrixResult})
-#             results = response.json()['data']['result']
-
-#             # Build a list of all labelnames used.
-#             # Gets all keys and discard __name__
-#             labelnames = set()
-#             for result in results:
-#                 labelnames.update(result['metric'].keys())
-            
-#             # Canonicalize
-#             labelnames.discard('__name__')
-#             labelnames = sorted(labelnames)
-#             print(labelnames)        
-            
-            
-#             # Write the header
-#             writer.writerow(['name', 'timestamp_and_value'] + labelnames)
-                
-#             # Write data into csv
-#             for result in results:
-#                 l = [result['metric'].get('__name__', '')] + result['values']  #values = [timestamp + value]                
-#                 for label in labelnames:
-#                     l.append(result['metric'].get(label, 'NaN'))
-#                 writer.writerow(l)
-
-#     csvfile.close()
 
